@@ -164,7 +164,36 @@ public:
 	            vs.pb(tmp);
 			}
 		}
-		bracketless(vs);
+
+		cout << bracketless(vs) << endl;
+		
+		// stack<string> st;
+
+		// int vs_len = vs.size();
+		// for(int i=0; i<vs_len; i++){
+		// 	if(vs[i] == ")"){
+		// 		vector<string> a;
+		// 		while(st.top() != "("){
+		// 			a.push_back(st.top());
+		// 			st.pop();
+		// 		}
+		// 		st.pop();
+		// 		reverse(all(a));
+		// 		st.push(bracketless(a));
+
+		// 	}else{
+		// 		st.push(vs[i]);
+		// 	}
+		// }
+		// vs.clear();
+		// while(!st.empty()){
+		// 	vs.pb(st.top());
+		// 	st.pop();
+		// }
+		// reverse(all(vs));
+		// string ans = bracketless(vs);
+
+		// cout << ans << endl;
 
 	}
 };
