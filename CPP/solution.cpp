@@ -85,120 +85,191 @@ class Mytools{ //_____________________________________________MY TOOLS__________
 
 };
 
-class Calculator{
-private:
-	string qs;
+class Search{
 public:
-
-	string helper_sum_add(string a, string b, string op){
-		double x = stod(a);
-		double y = stod(b);
-		if(op == "+"){
-			return to_string(x+y);
+	int binarySearch(VI &a, int key){
+		int n = a.size();
+		int k = 0;
+		for(int i=n/2; i>=1; i/=2){
+			while(i+k<n && a[i+k] <= key) k+=i;
 		}
-		return to_string(x-y);
-	}
-
-	string helper_div_mul(string a, string b, string op){
-		double x = stod(a);
-		double y = stod(b);
-		if(op == "*"){
-			return to_string(x*y);
-		}
-		return to_string(x/y);
-	}
-
-	string bracketless(vector<string> &a){
-		stack<string> st;
-		for(int i=0; i<a.size(); i++){
-			if(a[i]=="*" || a[i]=="/"){
-				string rslt = helper_div_mul(st.top(), a[i+1], a[i]);
-				st.pop();
-				i++;
-				st.push(rslt);
-			}else{
-				st.push(a[i]);
-			}
-		}
-		stack<string> st2;
-
-		while(!st.empty()){
-			string tmp = st.top();
-			st.pop();
-			if(tmp == "+" || tmp == "-"){
-				string aa = st2.top();
-				st2.pop();
-				string bb = st.top();
-				st.pop();
-				string rslt = helper_sum_add(aa, bb, tmp);
-				st2.push(rslt);
-			}else{
-				st2.push(tmp);
-			}
-
-		}
-
-		cout << st2.top();
-
-
-		return "";
-
-	}
-	Calculator(){
-		cin >> qs;
-		vector<string> vs;
-		
-
-		int i=0;
-		int n = qs.size();
-		while(i<n){
-			if(i<n && qs[i] >= '0' && qs[i] <= '9'){
-	            string number = "";
-	            while(i<n && qs[i] >= '0' && qs[i] <= '9'){
-	                    number += qs[i++];
-	            }
-	            vs.pb(number);
-			}else{
-			    string tmp = "";
-			    tmp += qs[i++];
-	            vs.pb(tmp);
-			}
-		}
-
-		cout << bracketless(vs) << endl;
-		
-		// stack<string> st;
-
-		// int vs_len = vs.size();
-		// for(int i=0; i<vs_len; i++){
-		// 	if(vs[i] == ")"){
-		// 		vector<string> a;
-		// 		while(st.top() != "("){
-		// 			a.push_back(st.top());
-		// 			st.pop();
-		// 		}
-		// 		st.pop();
-		// 		reverse(all(a));
-		// 		st.push(bracketless(a));
-
-		// 	}else{
-		// 		st.push(vs[i]);
-		// 	}
-		// }
-		// vs.clear();
-		// while(!st.empty()){
-		// 	vs.pb(st.top());
-		// 	st.pop();
-		// }
-		// reverse(all(vs));
-		// string ans = bracketless(vs);
-
-		// cout << ans << endl;
-
+		if(a[k] == key)
+			return k;
+		return -1;
 	}
 };
 
+class Sort{
+public:
+	int merge(vector<int> &a, int l, int r, int mid){
+		VI x, y;
+		for(int i=l; i<=mid; i++)
+			x.pb(a[i]);
+		for(int i=mid+1; i<=r; i++)
+			y.pb(a[i]);
 
+		int n = x.size(), m = y.size();
+        int i = 0, j = 0, k = l;
+		while(i<n && j<m){
+			if(x[i] < y[j]){
+				a[k++] = x[i++];
+			}
+			else{
+				a[k++] = y[j++];
+			}
+		}
+		while(i<n)
+			a[k++] = x[i++];
+		while(j<m)
+			a[k++] = y[j++];
+
+		return 0;
+	}
+
+	int mergeSort(vector<int> &a, int l, int r){
+		if(l==r)
+			return 0;
+		int mid = (l+r)/2;
+		mergeSort(a, l, mid);
+		mergeSort(a, mid+1, r);
+
+		merge(a, l, r, mid);
+
+		return 0;
+	}
+
+};
+
+
+class CompleteSearch{ //____________Complete Search : generating subsets, generating permutaions____________
+public:
+	int length;
+	vector<int> subset;
+	vector<vector<int>> subsets;
+
+	vector<vector<int>> genSubsets(int n){ // _________Generating subsets___________
+		length = n;
+		search(0);
+		return subsets;
+	}
+
+
+	void processSubset(){
+		subsets.push_back(subset);
+	}
+
+	void search(int k){
+		if(k==length){
+			processSubset();
+		}else{
+			search(k+1);
+			subset.push_back(k);
+			search(k+1);
+			subset.pop_back();
+		}
+
+	}
+
+};
+
+
+
+class Solution{   //_____________________________________________SOLUTION CLASS____________________________________________
+public:
+    Mytools t;
+
+    Solution(){
+    	int T = t.in();
+  		for(int i=1; i<=T; i++){
+  			// cout << "Case " << i << ": ";// << endl;
+  			solve_testcase();
+  		}
+    }
+
+    
+  	int solve_testcase(){
+
+  		string s;
+		cin >> s;
+		
+  		
+  		vector<string> tokens;
+  		
+		string number = "";
+		int i = 0;
+		while(s[i] != '\0'){
+			if(isdigit(s[i])){
+				while(s[i] != '\0' && isdigit(s[i])){
+					number += s[i++];
+				}
+			}else{
+				if(number.size() > 0){
+					tokens.pb(number);
+					number = "";
+				}
+				string sign = "";
+				sign += s[i];
+				tokens.pb(sign);
+				i++;
+			}
+		}
+		if(!number.empty()){
+			tokens.pb(number);
+		}
+
+		for(auto token: tokens){
+			cout << token << sp;
+		}
+
+  		map<string, std::function<double(double, double)>> ops = {
+  			{"+", [](double a, double b){ return a+b; }},
+  			{"-", [](double a, double b){ return a-b; }},
+  			{"*", [](double a, double b){ return a*b; }},
+  			{"/", [](double a, double b){ return a/b; }},
+  		};
+
+  		stack<double> values_st;
+  		stack<string> op_st;
+
+  		auto apply_operation = [&](){
+  			double right = values_st.top();
+  			values_st.pop();
+  			double left = values_st.top();
+  			values_st.pop();
+  			string op = op_st.top();
+  			op_st.pop();
+
+  			values_st.push(ops[op](left, right));
+  		};
+
+  		map<string, int> precedence = {
+  			{"+", 1},
+  			{"-", 1},
+  			{"*", 2},
+  			{"/", 2},
+  		};
+
+  		for(string str: tokens){
+  			if(str[0] >= '0' && str[0] <= '9'){
+  				values_st.push(stod(str));
+  			}else if(ops.find(str) != ops.end()){
+  				while(!op_st.empty() && precedence[op_st.top()] >= precedence[str]){
+  					apply_operation();
+  				}
+  				op_st.push(str);
+  			}
+  		}
+
+  		while(!op_st.empty()){
+  			apply_operation();
+  		}
+
+  		cout << "= " << values_st.top() << endl;
+
+  		return 0;
+  	}
+
+};
 
 void init_code(){
 	#ifndef ONLINE_JUDGE
@@ -211,8 +282,7 @@ void init_code(){
 int main(){             // __________________________Main Function________________________
 
 	init_code();
-	Calculator calculator;
-
+	Solution solution;
     return 0;
 }
 
